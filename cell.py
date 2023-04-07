@@ -25,9 +25,40 @@ class Cell:
         self.cell_btn_object = btn
     
     def left_click_actions(self, event):
-        print(event)
-        print("I am left clicked!")
+        if self.is_mine:
+            self.show_mine()
+        else:
+            self.show_cell()
     
+    def get_cell_by_axis(self, x, y):
+        #return a cell object based on the value of x and y
+        for cell in Cell.all:
+            if cell.x == x and cell.y == y:
+                return cell
+
+    @property # We can now use this as an attribute
+    def surrounded_cells(self):
+        cells = [
+            self.get_cell_by_axis(self.x - 1, self.y - 1),
+            self.get_cell_by_axis(self.x - 1, self.y),
+            self.get_cell_by_axis(self.x - 1, self.y + 1),
+            self.get_cell_by_axis(self.x, self.y - 1),
+            self.get_cell_by_axis(self.x + 1, self.y - 1),
+            self.get_cell_by_axis(self.x + 1, self.y),
+            self.get_cell_by_axis(self.x + 1, self.y + 1),
+            self.get_cell_by_axis(self.x, self.y + 1)
+        ]
+        # We must insert all the surrounded cells again, but without None objects
+        cells = [cell for cell in cells if cell is not None]
+        return cells
+    
+    def show_cell(self):
+        print(self.surrounded_cells)
+
+    def show_mine(self):
+        # Logic to interrupt game and display "you lost" message
+        self.cell_btn_object.configure(bg='red')
+
     def right_click_actions(self, event):
         print(event)
         print("I am right clicked!")
