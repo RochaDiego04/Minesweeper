@@ -1,6 +1,8 @@
 from tkinter import Button, Label
 import random
 import settings
+import ctypes
+import sys
 
 class Cell:
     all = []
@@ -9,6 +11,7 @@ class Cell:
     def __init__(self,x, y, is_mine=False):
         self.is_mine = is_mine
         self.is_opened = False
+        self.is_flag_marked = False
         self.cell_btn_object = None
         self.x = x
         self.y = y
@@ -86,16 +89,29 @@ class Cell:
                 Cell.cell_count_label_object.configure(
                     text=f"Cells left: {Cell.cell_count}"
                 )
+            # If this was marked as a marked_flag, must update to the default color
+            self.cell_btn_object.configure(
+                bg='SystemButtonFace'
+            )
         # Mark the cell as opened (!!!Must be last line of the method)
         self.is_opened = True
 
     def show_mine(self):
-        # Logic to interrupt game and display "you lost" message
         self.cell_btn_object.configure(bg='red')
+        ctypes.windll.user32.MessageBoxW(0, 'You clicked on a mine', 'Game Over', 0)
+        sys.exit()
 
     def right_click_actions(self, event):
-        print(event)
-        print("I am right clicked!")
+        if not self.is_flag_marked:
+            self.cell_btn_object.configure(
+                bg='orange'
+            )
+            self.is_flag_marked = True
+        else:
+            self.cell_btn_object.configure(
+                bg='SystemButtonFace' #Set the default color if it was marked already
+            )
+            self.is_flag_marked = False
     
     @staticmethod
     def randomize_mines():
