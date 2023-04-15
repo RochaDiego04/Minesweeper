@@ -1,6 +1,7 @@
 from tkinter import Button, Label
 import random
 import settings
+import utilities
 import ctypes
 import sys
 
@@ -18,12 +19,13 @@ class Cell:
         
         # Append the object to the Cell.all List
         Cell.all.append(self)
-    
+
+
     def create_btn_object(self, location):
         btn = Button(
             location,
             width=12,
-            height=4,
+            height=4
         )
         btn.bind('<Button-1>', self.left_click_actions) # Left Click
         btn.bind('<Button-3>', self.right_click_actions) # Right Click
@@ -51,6 +53,7 @@ class Cell:
             # If mines count == cells left count, player won
             if Cell.cell_count == settings.MINES_COUNT:
                 ctypes.windll.user32.MessageBoxW(0, 'You won the game! :D Congrats', 'Game Over', 0)
+                sys.exit()
         
         # Cancel left and right click events if cell is opened
         self.cell_btn_object.unbind('<Button-1>')
@@ -100,8 +103,13 @@ class Cell:
             self.cell_btn_object.configure(
                 bg='SystemButtonFace'
             )
-        # Mark the cell as opened (!!!Must be last line of the method)
+        # Mark the cell as opened
         self.is_opened = True
+
+        if self.surrounded_cells_mines_length == 0:
+            for cell in self.surrounded_cells:
+                if not cell.is_opened:
+                 cell.show_cell()
 
     def show_mine(self):
         self.cell_btn_object.configure(bg='red')
@@ -130,3 +138,4 @@ class Cell:
     
     def __repr__(self):
         return f"Cell({self.x}, {self.y})"
+    
