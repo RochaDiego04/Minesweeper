@@ -1,4 +1,4 @@
-from tkinter import Button, Label
+from tkinter import Button, Label, messagebox
 import random
 import settings
 import utilities
@@ -24,8 +24,8 @@ class Cell:
     def create_btn_object(self, location):
         btn = Button(
             location,
-            width=12,
-            height=4
+            width=settings.CELL_WIDTH,
+            height=settings.CELL_HEIGHT
         )
         btn.bind('<Button-1>', self.left_click_actions) # Left Click
         btn.bind('<Button-3>', self.right_click_actions) # Right Click
@@ -52,8 +52,8 @@ class Cell:
             self.show_cell()
             # If mines count == cells left count, player won
             if Cell.cell_count == settings.MINES_COUNT:
-                ctypes.windll.user32.MessageBoxW(0, 'You won the game! :D Congrats', 'Game Over', 0)
-                sys.exit()
+                messagebox.showinfo("You won :D", "You won the game, congrats.")
+                #ctypes.windll.user32.MessageBoxW(0, 'You won the game! :D Congrats', 'Game Over', 0)
         
         # Cancel left and right click events if cell is opened
         self.cell_btn_object.unbind('<Button-1>')
@@ -113,8 +113,10 @@ class Cell:
 
     def show_mine(self):
         self.cell_btn_object.configure(bg='red')
-        ctypes.windll.user32.MessageBoxW(0, 'You clicked on a mine', 'Game Over', 0)
-        sys.exit()
+        messagebox.showinfo("You lost", "You lose, try again!")
+        #ctypes.windll.user32.MessageBoxW(0, 'You clicked on a mine', 'Game Over', 0)
+        for cell in Cell.all:
+            cell.cell_btn_object.configure(state="disabled")
 
     def right_click_actions(self, event):
         if not self.is_flag_marked:
@@ -135,7 +137,19 @@ class Cell:
         )
         for picked_cell in picked_cells:
             picked_cell.is_mine = True
+
+    @staticmethod
+    def delete_all_cell_objects():
+        del Cell.all[:]
     
     def __repr__(self):
         return f"Cell({self.x}, {self.y})"
+
+    @staticmethod
+    def reset_cell_count():
+        Cell.cell_count = settings.CELL_COUNT
+        if Cell.cell_count_label_object:
+            Cell.cell_count_label_object.configure(
+                text=f"Cells left: {Cell.cell_count}"
+            )
     
