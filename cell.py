@@ -1,9 +1,9 @@
 from tkinter import Button, Label, messagebox
 import random
 import settings
-import utilities
-import ctypes
-import sys
+#import utilities
+#import ctypes
+#import sys
 
 class Cell:
     all = []
@@ -53,6 +53,9 @@ class Cell:
             # If mines count == cells left count, player won
             if Cell.cell_count == settings.MINES_COUNT:
                 messagebox.showinfo("You won :D", "You won the game, congrats.")
+                for cell in Cell.all:
+                    cell.cell_btn_object.unbind('<Button-1>')
+                    cell.cell_btn_object.unbind('<Button-3>')
                 #ctypes.windll.user32.MessageBoxW(0, 'You won the game! :D Congrats', 'Game Over', 0)
         
         # Cancel left and right click events if cell is opened
@@ -115,8 +118,11 @@ class Cell:
         self.cell_btn_object.configure(bg='red')
         messagebox.showinfo("You lost", "You lose, try again!")
         #ctypes.windll.user32.MessageBoxW(0, 'You clicked on a mine', 'Game Over', 0)
+        
         for cell in Cell.all:
-            cell.cell_btn_object.configure(state="disabled")
+            cell.cell_btn_object.unbind('<Button-1>')
+            cell.cell_btn_object.unbind('<Button-3>')
+        
 
     def right_click_actions(self, event):
         if not self.is_flag_marked:
@@ -142,9 +148,6 @@ class Cell:
     def delete_all_cell_objects():
         del Cell.all[:]
     
-    def __repr__(self):
-        return f"Cell({self.x}, {self.y})"
-
     @staticmethod
     def reset_cell_count():
         Cell.cell_count = settings.CELL_COUNT
@@ -152,4 +155,8 @@ class Cell:
             Cell.cell_count_label_object.configure(
                 text=f"Cells left: {Cell.cell_count}"
             )
+
+    def __repr__(self):
+        return f"Cell({self.x}, {self.y})"
+
     
