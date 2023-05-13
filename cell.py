@@ -1,9 +1,6 @@
 from tkinter import Button, Label, messagebox
 import random
 import settings
-#import utilities
-#import ctypes
-#import sys
 
 class Cell:
     all = []
@@ -43,6 +40,11 @@ class Cell:
         Cell.cell_count_label_object = lbl
     
     def left_click_actions(self, event):
+        if self.is_flag_marked:
+            self.is_flag_marked = False
+            self.cell_btn_object.configure(bg='SystemButtonFace')  # Set the default color for an empty cell
+            return  # Do nothing else if the cell is flagged
+        
         if self.is_mine:
             self.show_mine()
         else:
