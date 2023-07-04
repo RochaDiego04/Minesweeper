@@ -127,7 +127,7 @@ class Cell:
         
 
     def right_click_actions(self, event):
-        if not self.is_flag_marked:
+        if not self.is_flag_marked and not self.is_opened:
             self.cell_btn_object.configure(
                 bg='orange'
             )
