@@ -7,27 +7,22 @@ root = Tk()
 
 
 def setDifficulty(difficulty):
-    if(difficulty == "easy"):
-        settings.GRID_SIZE = 6
-        settings.CELL_COUNT = settings.GRID_SIZE ** 2
-        settings.MINES_COUNT = (settings.CELL_COUNT) // 10
-        settings.CELL_HEIGHT = 4
-        settings.CELL_WIDTH = 12
-        restart_game()
-    elif(difficulty == "medium"):
-        settings.GRID_SIZE = 8
-        settings.CELL_COUNT = settings.GRID_SIZE ** 2
-        settings.MINES_COUNT = (settings.CELL_COUNT) // 6
-        settings.CELL_HEIGHT = 3
-        settings.CELL_WIDTH = 9
-        restart_game()
-    elif(difficulty == "hard"):
-        settings.GRID_SIZE = 10
-        settings.CELL_COUNT = settings.GRID_SIZE ** 2
-        settings.MINES_COUNT = (settings.CELL_COUNT) // 4
-        settings.CELL_HEIGHT = 2
-        settings.CELL_WIDTH = 6
-        restart_game()
+    if difficulty == "easy":
+        difficulty_settings = settings.EASY_DIFFICULTY_SETTINGS
+    elif difficulty == "medium":
+        difficulty_settings = settings.MEDIUM_DIFFICULTY_SETTINGS
+    elif difficulty == "hard":
+        difficulty_settings = settings.HARD_DIFFICULTY_SETTINGS
+    else:
+        return
+    
+    settings.GRID_SIZE = difficulty_settings["GRID_SIZE"]
+    settings.CELL_COUNT = settings.GRID_SIZE ** 2
+    settings.MINES_COUNT = difficulty_settings["MINES_COUNT"]
+    settings.CELL_HEIGHT = difficulty_settings["CELL_HEIGHT"]
+    settings.CELL_WIDTH = difficulty_settings["CELL_WIDTH"]
+    
+    restart_game()
 
 def create_grid():
     for x in range(settings.GRID_SIZE):
